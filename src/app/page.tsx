@@ -1,28 +1,35 @@
 "use client";
-import { useState } from 'react';
-import Resultado from '@/components/Resultado';
-import AguaVerde from '@/components/AguaVerde';
-import AguaTurva from '@/components/AguaTurva';
-import Alcalinidade from '@/components/Alcalinidade';
-import Oleosidade from '@/components/Oleosidade';
-import Manutencao from '@/components/Manutencao';
+import { useState } from "react";
+import Resultado from "@/components/Resultado";
+import AguaVerde from "@/components/AguaVerde";
+import AguaTurva from "@/components/AguaTurva";
+import Alcalinidade from "@/components/Alcalinidade";
+import Oleosidade from "@/components/Oleosidade";
+import Manutencao from "@/components/Manutencao";
 
 // Definimos os possíveis estados da aplicação
-type AppStep = 'formulario' | 'resultados' | 'aguaVerde' | 'aguaTurva' | 'alcalinidade' | 'oleosidade' | 'manutencao';
+type AppStep =
+  | "formulario"
+  | "resultados"
+  | "aguaVerde"
+  | "aguaTurva"
+  | "alcalinidade"
+  | "oleosidade"
+  | "manutencao";
 
 export default function Home() {
-  const [step, setStep] = useState<AppStep>('formulario');
+  const [step, setStep] = useState<AppStep>("formulario");
   const [formData, setFormData] = useState({
-    comprimento: '',
-    largura: '',
-    ph: '',
-    profundidades: [''] // Agora armazenamos um array de profundidades
+    comprimento: "",
+    largura: "",
+    ph: "",
+    profundidades: [""], // Agora armazenamos um array de profundidades
   });
 
   const adicionarProfundidade = () => {
     setFormData({
       ...formData,
-      profundidades: [...formData.profundidades, '']
+      profundidades: [...formData.profundidades, ""],
     });
   };
 
@@ -31,7 +38,7 @@ export default function Home() {
     novasProfundidades.splice(index, 1);
     setFormData({
       ...formData,
-      profundidades: novasProfundidades
+      profundidades: novasProfundidades,
     });
   };
 
@@ -40,17 +47,17 @@ export default function Home() {
     novasProfundidades[index] = valor;
     setFormData({
       ...formData,
-      profundidades: novasProfundidades
+      profundidades: novasProfundidades,
     });
   };
 
   const calcularLitragem = () => {
     const comp = parseFloat(formData.comprimento);
     const larg = parseFloat(formData.largura);
-    
+
     // Calculamos o volume para cada seção da piscina com profundidade diferente
     let volumeTotal = 0;
-    
+
     // Se tivermos apenas uma profundidade, calculamos normalmente
     if (formData.profundidades.length === 1) {
       const prof = parseFloat(formData.profundidades[0]);
@@ -60,57 +67,64 @@ export default function Home() {
       // considerando que cada profundidade representa uma parte igual da piscina
       const areaPiscina = comp * larg;
       const tamanhoCadaSecao = areaPiscina / formData.profundidades.length;
-      
-      formData.profundidades.forEach(prof => {
+
+      formData.profundidades.forEach((prof) => {
         if (prof && !isNaN(parseFloat(prof))) {
           volumeTotal += tamanhoCadaSecao * parseFloat(prof);
         }
       });
     }
-    
-    return (volumeTotal * 1000).toFixed(2);
+
+    return (volumeTotal * 1000).toFixed(0);
   };
 
   const calcularDosagem = () => {
     const phAtual = parseFloat(formData.ph);
     const litros = parseFloat(calcularLitragem());
-    const diferenca = 7.2 - phAtual;
-    
-    if (diferenca <= 0) return '0';
-    return ((litros / 1000) * (diferenca / 0.2) * 4.5).toFixed(2);
+    const volumeEmM3 = litros / 1000;
+    const phDesejado = 7.2;
+    const diferenca = phDesejado - phAtual;
+
+    // Se o pH atual já for 7.2 ou maior, não é necessário adicionar pH+
+    if (diferenca <= 0) return "0";
+
+    // Aproximadamente 68g/m³ por unidade de pH (baseado na tabela GENCO)
+    const dosagem = volumeEmM3 * diferenca * 68;
+
+    return dosagem.toFixed(0);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStep('resultados');
+    setStep("resultados");
   };
 
   const handleVoltar = () => {
-    setStep('formulario');
+    setStep("formulario");
   };
 
   const handleVoltarParaResultados = () => {
-    setStep('resultados');
+    setStep("resultados");
   };
 
   const handleAguaVerde = () => {
-    setStep('aguaVerde');
+    setStep("aguaVerde");
   };
 
   const handleAguaTurva = () => {
-    setStep('aguaTurva');
+    setStep("aguaTurva");
   };
 
   const handleAlcalinidade = () => {
-    setStep('alcalinidade');
+    setStep("alcalinidade");
   };
 
   const handleOleosidade = () => {
-    setStep('oleosidade');
+    setStep("oleosidade");
   };
 
   const handleManutencao = () => {
-    setStep('manutencao');
+    setStep("manutencao");
   };
 
   return (
@@ -125,20 +139,24 @@ export default function Home() {
       >
         <source src="/fundo.mp4" type="video/mp4" />
       </video>
-      
+
       {/* Overlay para melhorar contraste */}
       <div className="absolute top-0 left-0 w-full h-full bg-white/60 dark:bg-gray-900/70 -z-10"></div>
-      
+
       {/* Painel do Formulário */}
-      <div className={`w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 transition-all duration-500 ${step === 'formulario' ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 absolute'}`}>
-        <div className="logoLoja">
-          
-        </div>
-        
+      <div
+        className={`w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 transition-all duration-500 ${
+          step === "formulario"
+            ? "translate-x-0 opacity-100"
+            : "-translate-x-full opacity-0 absolute"
+        }`}
+      >
+        <div className="logoLoja"></div>
+
         <h1 className="text-2xl font-light text-gray-800 dark:text-white mb-8 text-center">
           EcoClean Descomplica Piscinas
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Campo Comprimento */}
           <div>
@@ -151,7 +169,9 @@ export default function Home() {
               placeholder="Ex: 5.0"
               step="0.1"
               value={formData.comprimento}
-              onChange={(e) => setFormData({ ...formData, comprimento: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, comprimento: e.target.value })
+              }
             />
           </div>
 
@@ -166,7 +186,9 @@ export default function Home() {
               placeholder="Ex: 3.0"
               step="0.1"
               value={formData.largura}
-              onChange={(e) => setFormData({ ...formData, largura: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, largura: e.target.value })
+              }
             />
           </div>
 
@@ -184,7 +206,9 @@ export default function Home() {
                     placeholder="Ex: 1.5"
                     step="0.1"
                     value={profundidade}
-                    onChange={(e) => atualizarProfundidade(index, e.target.value)}
+                    onChange={(e) =>
+                      atualizarProfundidade(index, e.target.value)
+                    }
                   />
                   {index === 0 ? (
                     <button
@@ -223,10 +247,11 @@ export default function Home() {
               value={formData.ph}
               onChange={(e) => setFormData({ ...formData, ph: e.target.value })}
             />
-            
+
             <div className="mt-4 space-y-2">
               <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                Caso precise de instruções para verificar o pH da piscina, acesse o link abaixo:
+                Caso precise de instruções para verificar o pH da piscina,
+                acesse o link abaixo:
               </p>
               <a
                 href="https://www.youtube.com/watch?v=S-X9bsjPWIQ"
@@ -250,13 +275,21 @@ export default function Home() {
       </div>
 
       {/* Painel de Resultados */}
-      <div className={`transition-all duration-500 ${step === 'resultados' ? 'translate-x-0 opacity-100' : step === 'formulario' ? 'translate-x-full opacity-0 absolute' : '-translate-x-full opacity-0 absolute'}`}>
+      <div
+        className={`transition-all duration-500 ${
+          step === "resultados"
+            ? "translate-x-0 opacity-100"
+            : step === "formulario"
+            ? "translate-x-full opacity-0 absolute"
+            : "-translate-x-full opacity-0 absolute"
+        }`}
+      >
         <Resultado
           formData={{
             comprimento: formData.comprimento,
             largura: formData.largura,
             profundidade: formData.profundidades[0], // Para manter compatibilidade
-            ph: formData.ph
+            ph: formData.ph,
           }}
           calcularLitragem={calcularLitragem}
           calcularDosagem={calcularDosagem}
@@ -270,7 +303,13 @@ export default function Home() {
       </div>
 
       {/* Painel de Água Verde */}
-      <div className={`transition-all duration-500 ${step === 'aguaVerde' ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 absolute'}`}>
+      <div
+        className={`transition-all duration-500 ${
+          step === "aguaVerde"
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 absolute"
+        }`}
+      >
         <AguaVerde
           litragem={calcularLitragem()}
           onVoltar={handleVoltarParaResultados}
@@ -278,7 +317,13 @@ export default function Home() {
       </div>
 
       {/* Painel de Água Turva */}
-      <div className={`transition-all duration-500 ${step === 'aguaTurva' ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 absolute'}`}>
+      <div
+        className={`transition-all duration-500 ${
+          step === "aguaTurva"
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 absolute"
+        }`}
+      >
         <AguaTurva
           litragem={calcularLitragem()}
           onVoltar={handleVoltarParaResultados}
@@ -286,7 +331,13 @@ export default function Home() {
       </div>
 
       {/* Painel de Alcalinidade */}
-      <div className={`transition-all duration-500 ${step === 'alcalinidade' ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 absolute'}`}>
+      <div
+        className={`transition-all duration-500 ${
+          step === "alcalinidade"
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 absolute"
+        }`}
+      >
         <Alcalinidade
           litragem={calcularLitragem()}
           onVoltar={handleVoltarParaResultados}
@@ -294,7 +345,13 @@ export default function Home() {
       </div>
 
       {/* Painel de Oleosidade */}
-      <div className={`transition-all duration-500 ${step === 'oleosidade' ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 absolute'}`}>
+      <div
+        className={`transition-all duration-500 ${
+          step === "oleosidade"
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 absolute"
+        }`}
+      >
         <Oleosidade
           litragem={calcularLitragem()}
           onVoltar={handleVoltarParaResultados}
@@ -302,7 +359,13 @@ export default function Home() {
       </div>
 
       {/* Painel de Manutenção */}
-      <div className={`transition-all duration-500 ${step === 'manutencao' ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 absolute'}`}>
+      <div
+        className={`transition-all duration-500 ${
+          step === "manutencao"
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 absolute"
+        }`}
+      >
         <Manutencao
           litragem={calcularLitragem()}
           onVoltar={handleVoltarParaResultados}
