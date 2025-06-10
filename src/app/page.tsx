@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Resultado from "@/components/Resultado";
 import AguaVerde from "@/components/AguaVerde";
 import AguaTurva from "@/components/AguaTurva";
@@ -19,6 +19,20 @@ type AppStep =
 
 export default function Home() {
   const [step, setStep] = useState<AppStep>("formulario");
+
+  useEffect(() => {
+    // Força o tema escuro
+    document.documentElement.classList.add("dark");
+  }, []);
+
+  // Efeito para rolar para o topo quando mudar de painel
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [step]);
+
   const [formData, setFormData] = useState({
     comprimento: "",
     largura: "",
@@ -141,11 +155,11 @@ export default function Home() {
       </video>
 
       {/* Overlay para melhorar contraste */}
-      <div className="absolute top-0 left-0 w-full h-full bg-white/60 dark:bg-gray-900/70 -z-10"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/70 -z-10"></div>
 
       {/* Painel do Formulário */}
       <div
-        className={`w-full max-w-md bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 transition-all duration-500 ${
+        className={`w-full max-w-md bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 transition-all duration-500 ${
           step === "formulario"
             ? "translate-x-0 opacity-100"
             : "-translate-x-full opacity-0 absolute"
@@ -153,19 +167,19 @@ export default function Home() {
       >
         <div className="logoLoja"></div>
 
-        <h1 className="text-2xl font-light text-gray-800 dark:text-white mb-8 text-center">
+        <h1 className="text-2xl font-light text-white mb-8 text-center">
           EcoClean Descomplica Piscinas
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Campo Comprimento */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Comprimento (metros)
             </label>
             <input
               type="number"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white"
               placeholder="Ex: 5.0"
               step="0.1"
               value={formData.comprimento}
@@ -177,12 +191,12 @@ export default function Home() {
 
           {/* Campo Largura */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Largura (metros)
             </label>
             <input
               type="number"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white"
               placeholder="Ex: 3.0"
               step="0.1"
               value={formData.largura}
@@ -194,7 +208,7 @@ export default function Home() {
 
           {/* Campos de Profundidade */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Profundidade (metros)
             </label>
             <div className="space-y-2">
@@ -202,7 +216,7 @@ export default function Home() {
                 <div key={index} className="flex gap-2">
                   <input
                     type="number"
-                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="flex-1 px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white"
                     placeholder="Ex: 1.5"
                     step="0.1"
                     value={profundidade}
@@ -234,7 +248,7 @@ export default function Home() {
 
           {/* Campo pH Atual - Versão Numérica */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               pH Atual
             </label>
             <input
@@ -242,14 +256,14 @@ export default function Home() {
               min="0"
               max="14"
               step="0.1"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white"
               placeholder="Digite o valor entre 0 e 14"
               value={formData.ph}
               onChange={(e) => setFormData({ ...formData, ph: e.target.value })}
             />
 
             <div className="mt-4 space-y-2">
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+              <p className="text-sm text-gray-400 text-center">
                 Caso precise de instruções para verificar o pH da piscina,
                 acesse o link abaixo:
               </p>
@@ -257,7 +271,7 @@ export default function Home() {
                 href="https://www.youtube.com/watch?v=S-X9bsjPWIQ"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 text-sm font-medium transition-colors"
+                className="flex items-center justify-center gap-1 text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
               >
                 Como medir o pH da piscina ▶
               </a>
@@ -302,6 +316,20 @@ export default function Home() {
         />
       </div>
 
+      {/* Painel de Alcalinidade */}
+      <div
+        className={`transition-all duration-500 ${
+          step === "alcalinidade"
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 absolute"
+        }`}
+      >
+        <Alcalinidade
+          litragem={calcularLitragem()}
+          onVoltar={handleVoltarParaResultados}
+        />
+      </div>
+
       {/* Painel de Água Verde */}
       <div
         className={`transition-all duration-500 ${
@@ -325,20 +353,6 @@ export default function Home() {
         }`}
       >
         <AguaTurva
-          litragem={calcularLitragem()}
-          onVoltar={handleVoltarParaResultados}
-        />
-      </div>
-
-      {/* Painel de Alcalinidade */}
-      <div
-        className={`transition-all duration-500 ${
-          step === "alcalinidade"
-            ? "translate-x-0 opacity-100"
-            : "translate-x-full opacity-0 absolute"
-        }`}
-      >
-        <Alcalinidade
           litragem={calcularLitragem()}
           onVoltar={handleVoltarParaResultados}
         />
