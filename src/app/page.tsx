@@ -142,10 +142,10 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 overflow-hidden relative">
+    <main className="min-h-screen flex items-center justify-center p-4 overflow-hidden relative main-container">
       {/* Vídeo de Fundo */}
       <video
-        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+        className="fixed inset-0 w-full h-full object-cover -z-10 video-background"
         autoPlay
         muted
         loop
@@ -155,7 +155,7 @@ export default function Home() {
       </video>
 
       {/* Overlay para melhorar contraste */}
-      <div className="absolute top-0 left-0 w-full h-full bg-gray-900/70 -z-10"></div>
+      <div className="fixed inset-0 w-full h-full bg-gray-900/70 -z-10 video-background"></div>
 
       {/* Painel do Formulário */}
       <div

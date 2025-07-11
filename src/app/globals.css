@@ -41,4 +41,22 @@ body {
   body {
     padding-bottom: 100px;
   }
+  
+  /* Remove o padding do body e aplica ao main */
+  body {
+    padding-bottom: 0 !important;
+  }
+  
+  .main-container {
+    padding-bottom: 100px !important;
+  }
+  
+  /* Vídeo cobre toda a viewport */
+  .video-background {
+    height: 100vh !important;
+    width: 100vw !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
 }
